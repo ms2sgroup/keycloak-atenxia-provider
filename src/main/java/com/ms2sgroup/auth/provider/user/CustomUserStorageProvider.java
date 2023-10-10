@@ -166,7 +166,6 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         log.info("[I113] getUsers: realm={}", realm.getName());
         
         try ( Connection c = DbUtil.getConnection(this.model)) {
-            log.info("[I113] getUsers: conectado");
             PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true order by username limit ? offset ?");
             st.setInt(1, maxResults);
             st.setInt(2, firstResult);
@@ -217,19 +216,20 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     //------------------- Implementation 
     private UserModel mapUser(RealmModel realm, ResultSet rs) throws SQLException {
         
-	log.info("mapUser "+realm+","+model);
+	log.info("mapUser 1");
+	String username= rs.getString("username");
         DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-        CustomUser user = new CustomUser.Builder(ksession, realm, model, rs.getString("username"))
+        CustomUser user = new CustomUser.Builder(ksession, realm, model, username)
           .email(rs.getString("email"))
           .firstName(rs.getString("first_name"))
           .lastName(rs.getString("last_name"))
           .build();
         
-        log.info("mapUser "+rs.getString("username"));
+        log.info("mapUser 2 "+username);
         ResultSet roles = null;
         try ( Connection c = DbUtil.getConnection(this.model)) {
             PreparedStatement st = c.prepareStatement("select is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active = true and username=?");
-            st.setString(1, rs.getString("username"));
+            st.setString(1, username);
             st.execute();
             roles = st.getResultSet();
         } catch (SQLException ex) {
