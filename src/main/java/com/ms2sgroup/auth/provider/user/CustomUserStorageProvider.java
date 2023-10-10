@@ -278,13 +278,14 @@ public class CustomUserStorageProvider implements UserStorageProvider,
    	RoleModel role = null;
            ClientModel client = realm.getClientByClientId(clientId);
            if (client != null) {
+               log.info("getRoleFromString cliente existente");
            	try
                    {
            	    role = client.getRole(roleName);
                    }
                    catch(Exception e)
                    {
-               	
+                  	log.info("getRoleFromString Error" + e.toString());
                    }
            }
            
