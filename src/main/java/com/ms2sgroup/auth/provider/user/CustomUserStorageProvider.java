@@ -238,14 +238,14 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         }
         
        
-        if(roles!=null)
+        if(roles!=null && roles.next())
         {
             log.info("mapUser roles");
-            boolean center_admin = (roles.getBoolean("is_center_admin")) ? true:false;
-            boolean parent = (roles.getBoolean("is_parent")) ? true:false;
-            boolean professional = (roles.getBoolean("is_professional")) ? true:false;
-            boolean teacher = (roles.getBoolean("is_teacher")) ? true:false;
-            boolean admin = (roles.getBoolean("is_staff")) ? true:false;
+            boolean center_admin = roles.getBoolean("is_center_admin");
+            boolean parent = roles.getBoolean("is_parent");
+            boolean professional = roles.getBoolean("is_professional");
+            boolean teacher = roles.getBoolean("is_teacher");
+            boolean admin = roles.getBoolean("is_staff");
             
             log.info("lookup user by username roles " + center_admin +"," +parent+"," +professional+"," +teacher+"," +admin);
             
