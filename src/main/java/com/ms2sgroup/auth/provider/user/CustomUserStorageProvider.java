@@ -127,7 +127,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         String username = sid.getExternalId();
         
         try ( Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select password from users where username = ?");
+            PreparedStatement st = c.prepareStatement("select password from atenxia_user where username = ?");
             st.setString(1, username);
             st.execute();
             ResultSet rs = st.getResultSet();
@@ -164,6 +164,9 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     @Override
     public Stream<UserModel> getGroupMembersStream(RealmModel realm, GroupModel group, Integer firstResult, Integer maxResults) {
         log.info("[I113] getUsers: realm={}", realm.getName());
+        
+        if (maxResults == null)
+            maxResults = 10;
         
         try ( Connection c = DbUtil.getConnection(this.model)) {
             PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true order by username limit ? offset ?");
@@ -219,11 +222,11 @@ public class CustomUserStorageProvider implements UserStorageProvider,
 	
 	String username= rs.getString("username");
 	log.info("mapUser 1 "+username);
-        DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+        //DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         CustomUser user = new CustomUser.Builder(ksession, realm, model, username)
           .email(rs.getString("email"))
-          .firstName("Mati")
-          .lastName("Castillo")
+          .firstName("")
+          .lastName("")
           .build();
         
        /* log.info("mapUser 2 "+username);
