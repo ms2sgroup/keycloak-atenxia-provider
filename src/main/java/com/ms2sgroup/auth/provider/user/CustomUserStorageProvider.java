@@ -216,13 +216,14 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     //------------------- Implementation 
     private UserModel mapUser(RealmModel realm, ResultSet rs) throws SQLException {
         
-	log.info("mapUser 1");
+	
 	String username= rs.getString("username");
+	log.info("mapUser 1 "+username);
         DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         CustomUser user = new CustomUser.Builder(ksession, realm, model, username)
           .email(rs.getString("email"))
-          .firstName(rs.getString("first_name"))
-          .lastName(rs.getString("last_name"))
+          .firstName("Mati")
+          .lastName("Castillo"))
           .build();
         
         log.info("mapUser 2 "+username);
