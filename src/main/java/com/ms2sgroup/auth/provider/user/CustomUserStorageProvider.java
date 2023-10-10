@@ -223,7 +223,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         CustomUser user = new CustomUser.Builder(ksession, realm, model, username)
           .email(rs.getString("email"))
           .firstName("Mati")
-          .lastName("Castillo"))
+          .lastName("Castillo")
           .build();
         
         log.info("mapUser 2 "+username);
