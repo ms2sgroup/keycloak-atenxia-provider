@@ -166,7 +166,8 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         log.info("[I113] getUsers: realm={}", realm.getName());
         
         try ( Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true and username like ? order by username limit ? offset ?");
+            log.info("[I113] getUsers: conectado");
+            PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true order by username limit ? offset ?");
             st.setInt(1, maxResults);
             st.setInt(2, firstResult);
             st.execute();
