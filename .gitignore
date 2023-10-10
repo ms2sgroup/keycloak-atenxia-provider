@@ -1,5 +1,5 @@
 keycloak
 **/target
-.DS_Store
-.idea
-.vscode/
+.project
+.classpath
+.settings/
