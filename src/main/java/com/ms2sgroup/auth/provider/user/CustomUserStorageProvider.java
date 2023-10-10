@@ -5,11 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.keycloak.component.ComponentModel;
@@ -28,6 +27,8 @@ import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.ms2sgroup.auth.provider.user.util.PBKDF2SHA256HashingUtil;
 
 public class CustomUserStorageProvider implements UserStorageProvider, 
   UserLookupProvider, 
@@ -133,7 +134,11 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             ResultSet rs = st.getResultSet();
             if ( rs.next()) {
                 String pwd = rs.getString(1);
-                return pwd.equals(credentialInput.getChallengeResponse());
+                String hash = Optional.ofNullable(pwd).orElse("");
+                String[] components = hash.split("\\$");
+                return new PBKDF2SHA256HashingUtil(pwd, components[2], Integer.valueOf(components[1])).validatePassword(components[3]);
+                
+                //return pwd.equals(credentialInput.getChallengeResponse());
             }
             else {
                 return false;
