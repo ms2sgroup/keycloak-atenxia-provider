@@ -255,6 +255,8 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_center_admin));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_admin));
             
+            log.info("delete Role Mapping");
+            
             if (teacher)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_teacher));
             if (parent)
