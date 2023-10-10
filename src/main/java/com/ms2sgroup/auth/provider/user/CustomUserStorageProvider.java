@@ -216,6 +216,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     //------------------- Implementation 
     private UserModel mapUser(RealmModel realm, ResultSet rs) throws SQLException {
         
+	log.info("mapUser "+realm+","+model);
         DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         CustomUser user = new CustomUser.Builder(ksession, realm, model, rs.getString("username"))
           .email(rs.getString("email"))
@@ -223,6 +224,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
           .lastName(rs.getString("last_name"))
           .build();
         
+        log.info("mapUser "+rs.getString("username"));
         ResultSet roles = null;
         try ( Connection c = DbUtil.getConnection(this.model)) {
             PreparedStatement st = c.prepareStatement("select is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active = true and username=?");
@@ -236,6 +238,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
        
         if(roles!=null)
         {
+            log.info("mapUser roles");
             boolean center_admin = (roles.getBoolean("is_center_admin")) ? true:false;
             boolean parent = (roles.getBoolean("is_parent")) ? true:false;
             boolean professional = (roles.getBoolean("is_professional")) ? true:false;
