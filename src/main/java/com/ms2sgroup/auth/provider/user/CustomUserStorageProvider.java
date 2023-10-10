@@ -226,7 +226,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
           .lastName("Castillo")
           .build();
         
-        log.info("mapUser 2 "+username);
+       /* log.info("mapUser 2 "+username);
         ResultSet roles = null;
         try ( Connection c = DbUtil.getConnection(this.model)) {
             PreparedStatement st = c.prepareStatement("select is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active = true and username=?");
@@ -267,7 +267,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             	user.grantRole(getRoleFromString(realm, this.client, this.role_center_admin));
             if (admin)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_admin));
-        }
+        }*/
       
         return user;
     }
