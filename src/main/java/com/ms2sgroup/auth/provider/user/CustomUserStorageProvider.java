@@ -136,7 +136,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
                 String pwd = rs.getString(1);
                 String hash = Optional.ofNullable(pwd).orElse("");
                 String[] components = hash.split("\\$");
-                return new PBKDF2SHA256HashingUtil(pwd, components[2], Integer.valueOf(components[1])).validatePassword(components[3]);
+                return new PBKDF2SHA256HashingUtil(credentialInput.getChallengeResponse(), components[2], Integer.valueOf(components[1])).validatePassword(components[3]);
                 
                 //return pwd.equals(credentialInput.getChallengeResponse());
             }
