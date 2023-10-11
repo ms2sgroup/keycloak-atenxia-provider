@@ -68,7 +68,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     public UserModel getUserByUsername(RealmModel realm, String username) {
         log.info("[I41] getUserByUsername({})",username);
         try ( Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true and username = ?");
+            PreparedStatement st = c.prepareStatement("select username, '','', email, is_center_admin, is_parent, is_professional, is_teacher, is_staff  from atenxia_user where is_active=true and username = ?");
             st.setString(1, username);
             st.execute();
             ResultSet rs = st.getResultSet();
@@ -88,7 +88,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     public UserModel getUserByEmail(RealmModel realm, String email) {
         log.info("[I48] getUserByEmail({})",email);
         try ( Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true and email = ?");
+            PreparedStatement st = c.prepareStatement("select username, '','', email, is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active=true and email = ?");
             st.setString(1, email);
             st.execute();
             ResultSet rs = st.getResultSet();
@@ -128,7 +128,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         String username = sid.getExternalId();
         
         try ( Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select password from atenxia_user where username = ?");
+            PreparedStatement st = c.prepareStatement("select password from atenxia_user where is_active=true and username = ?");
             st.setString(1, username);
             st.execute();
             ResultSet rs = st.getResultSet();
@@ -174,7 +174,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             maxResults = 10;
         
         try ( Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true order by username limit ? offset ?");
+            PreparedStatement st = c.prepareStatement("select username, '','', email, is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active=true order by username limit ? offset ?");
             st.setInt(1, maxResults);
             st.setInt(2, firstResult);
             st.execute();
@@ -195,7 +195,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         log.info("[I139] searchForUser: realm={}", realm.getName());
 
         try (Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select username, '','', email from atenxia_user where is_active=true and username like ? order by username limit ? offset ?");
+            PreparedStatement st = c.prepareStatement("select username, '','', email, is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active=true and username like ? order by username limit ? offset ?");
             st.setString(1, search);
             st.setInt(2, maxResults);
             st.setInt(3, firstResult);
@@ -233,11 +233,16 @@ public class CustomUserStorageProvider implements UserStorageProvider,
 	
 	String username= rs.getString("username");
 	String email = rs.getString("email");
+	boolean centerAdmin = rs.getBoolean("is_center_admin");
+        boolean parent = rs.getBoolean("is_parent");
+        boolean professional = rs.getBoolean("is_professional");
+        boolean teacher = rs.getBoolean("is_teacher");
+        boolean admin = rs.getBoolean("is_staff");
         
-	CustomUser userAux = new CustomUser(username, email,"","", null);
+	CustomUser userAux = new CustomUser(username, email,"","", centerAdmin, parent, professional, teacher, admin);
         CustomUserAdapter user = new CustomUserAdapter(ksession, realm, model, userAux);
                 
-        ResultSet roles = null;
+        /*ResultSet roles = null;
         try ( Connection c = DbUtil.getConnection(this.model)) {
             PreparedStatement st = c.prepareStatement("select is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active = true and username=?");
             st.setString(1, username);
@@ -246,23 +251,12 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         } catch (SQLException ex) {
             throw new RuntimeException("Database error:" + ex.getMessage(), ex);
         }
-        
-       
-        if(roles!=null && roles.next())
-        {
-                      
-            boolean center_admin = roles.getBoolean("is_center_admin");
-            boolean parent = roles.getBoolean("is_parent");
-            boolean professional = roles.getBoolean("is_professional");
-            boolean teacher = roles.getBoolean("is_teacher");
-            boolean admin = roles.getBoolean("is_staff");
-                        
+                   
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_teacher));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_parent));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_professional));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_center_admin));
-            user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_admin));
-            
+            user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_admin));*/
             
             if (teacher)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_teacher));
@@ -270,11 +264,11 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             	user.grantRole(getRoleFromString(realm, this.client, this.role_parent));
             if (professional)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_professional));
-            if (center_admin)
+            if (centerAdmin)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_center_admin));
             if (admin)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_admin));
-        }
+        
       
         return user;
     }
