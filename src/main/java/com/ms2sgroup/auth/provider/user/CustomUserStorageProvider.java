@@ -250,26 +250,31 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             roles = st.getResultSet();
         } catch (SQLException ex) {
             throw new RuntimeException("Database error:" + ex.getMessage(), ex);
-        }
-                   
-            user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_teacher));
-            user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_parent));
-            user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_professional));
-            user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_center_admin));
-            user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_admin));*/
-            
-            if (teacher)
-            	user.grantRole(getRoleFromString(realm, this.client, this.role_teacher));
-            if (parent)
-            	user.grantRole(getRoleFromString(realm, this.client, this.role_parent));
-            if (professional)
-            	user.grantRole(getRoleFromString(realm, this.client, this.role_professional));
-            if (centerAdmin)
-            	user.grantRole(getRoleFromString(realm, this.client, this.role_center_admin));
-            if (admin)
-            	user.grantRole(getRoleFromString(realm, this.client, this.role_admin));
+        }*/
         
-      
+        RoleModel roleTeacher = getRoleFromString(realm, this.client, this.role_teacher);
+        RoleModel roleParent = getRoleFromString(realm, this.client, this.role_parent);
+        RoleModel roleProfessional = getRoleFromString(realm, this.client, this.role_professional);
+        RoleModel roleCenterAdmin = getRoleFromString(realm, this.client, this.role_center_admin);
+        RoleModel roleAdmin = getRoleFromString(realm, this.client, this.role_admin);
+                   
+        user.deleteRoleMapping(roleTeacher);
+        user.deleteRoleMapping(roleParent);
+        user.deleteRoleMapping(roleProfessional);
+        user.deleteRoleMapping(roleCenterAdmin);
+        user.deleteRoleMapping(roleAdmin);
+            
+        if (teacher)
+            user.grantRole(roleTeacher);
+        if (parent)
+            user.grantRole(roleParent);
+        if (professional)
+            user.grantRole(roleProfessional);
+        if (centerAdmin)
+            user.grantRole(roleCenterAdmin);
+        if (admin)
+            user.grantRole(roleAdmin);
+        
         return user;
     }
     
