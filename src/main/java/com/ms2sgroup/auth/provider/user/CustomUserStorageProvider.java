@@ -252,32 +252,42 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             throw new RuntimeException("Database error:" + ex.getMessage(), ex);
         }*/
         
-        RoleModel roleTeacher = getRoleFromString(realm, this.client, this.role_teacher);
-        user.deleteRoleMapping(roleTeacher);
-        
-        RoleModel roleParent = getRoleFromString(realm, this.client, this.role_parent);
-        user.deleteRoleMapping(roleParent);
-        
-        RoleModel roleProfessional = getRoleFromString(realm, this.client, this.role_professional);
-        user.deleteRoleMapping(roleProfessional);
-        
-        RoleModel roleCenterAdmin = getRoleFromString(realm, this.client, this.role_center_admin);
-        user.deleteRoleMapping(roleCenterAdmin);
-        
-        RoleModel roleAdmin = getRoleFromString(realm, this.client, this.role_admin);
-        user.deleteRoleMapping(roleAdmin);
+        try
+        {
+            RoleModel roleTeacher = getRoleFromString(realm, this.client, this.role_teacher);
+            user.deleteRoleMapping(roleTeacher);
+            
+            RoleModel roleParent = getRoleFromString(realm, this.client, this.role_parent);
+            user.deleteRoleMapping(roleParent);
+            
+            RoleModel roleProfessional = getRoleFromString(realm, this.client, this.role_professional);
+            user.deleteRoleMapping(roleProfessional);
+            
+            RoleModel roleCenterAdmin = getRoleFromString(realm, this.client, this.role_center_admin);
+            user.deleteRoleMapping(roleCenterAdmin);
+            
+            RoleModel roleAdmin = getRoleFromString(realm, this.client, this.role_admin);
+            user.deleteRoleMapping(roleAdmin);
+            
+            if (teacher)
+                user.grantRole(roleTeacher);
+            if (parent)
+                user.grantRole(roleParent);
+            if (professional)
+                user.grantRole(roleProfessional);
+            if (centerAdmin)
+                user.grantRole(roleCenterAdmin);
+            if (admin)
+                user.grantRole(roleAdmin);
+            
+        }
+        catch(Exception e)
+        {
+            
+        }
         
                 
-        if (teacher)
-            user.grantRole(roleTeacher);
-        if (parent)
-            user.grantRole(roleParent);
-        if (professional)
-            user.grantRole(roleProfessional);
-        if (centerAdmin)
-            user.grantRole(roleCenterAdmin);
-        if (admin)
-            user.grantRole(roleAdmin);
+        
         
         return user;
     }
