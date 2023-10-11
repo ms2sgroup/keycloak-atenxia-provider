@@ -237,7 +237,6 @@ public class CustomUserStorageProvider implements UserStorageProvider,
 	CustomUser userAux = new CustomUser(username, email,"","", null);
         CustomUserAdapter user = new CustomUserAdapter(ksession, realm, model, userAux);
                 
-       log.info("mapUser 2 "+username);
         ResultSet roles = null;
         try ( Connection c = DbUtil.getConnection(this.model)) {
             PreparedStatement st = c.prepareStatement("select is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active = true and username=?");
@@ -251,22 +250,19 @@ public class CustomUserStorageProvider implements UserStorageProvider,
        
         if(roles!=null && roles.next())
         {
-            log.info("mapUser roles");
+                      
             boolean center_admin = roles.getBoolean("is_center_admin");
             boolean parent = roles.getBoolean("is_parent");
             boolean professional = roles.getBoolean("is_professional");
             boolean teacher = roles.getBoolean("is_teacher");
             boolean admin = roles.getBoolean("is_staff");
-            
-            log.info("lookup user by username roles " + center_admin +"," +parent+"," +professional+"," +teacher+"," +admin);
-            
+                        
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_teacher));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_parent));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_professional));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_center_admin));
             user.deleteRoleMapping(getRoleFromString(realm, this.client, this.role_admin));
             
-            log.info("delete Role Mapping");
             
             if (teacher)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_teacher));
@@ -285,18 +281,15 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     
     
     private RoleModel getRoleFromString(RealmModel realm, String clientId, String roleName) {
-   	log.info("getRoleFromString " + roleName);
    	RoleModel role = null;
            ClientModel client = realm.getClientByClientId(clientId);
            if (client != null) {
-               log.info("getRoleFromString cliente existente");
            	try
                    {
            	    role = client.getRole(roleName);
                    }
                    catch(Exception e)
                    {
-                  	log.info("getRoleFromString Error" + e.toString());
                    }
            }
            
