@@ -33,7 +33,7 @@ import com.ms2sgroup.auth.provider.user.util.PBKDF2SHA256HashingUtil;
 public class CustomUserStorageProvider implements UserStorageProvider, 
   UserLookupProvider, 
   CredentialInputValidator,
-  UserQueryProvider {
+  UserQueryProvider  {
     
     private static final Logger log = LoggerFactory.getLogger(CustomUserStorageProvider.class);
     private KeycloakSession ksession;
@@ -213,7 +213,13 @@ public class CustomUserStorageProvider implements UserStorageProvider,
 
     @Override
     public Stream<UserModel> searchForUserStream(RealmModel realm, Map<String, String> params, Integer firstResult, Integer maxResults) {
-        return getGroupMembersStream(realm, null, firstResult, maxResults);
+	if (params.containsKey(UserModel.USERNAME)) {
+	    return searchForUserStream(realm, params.get(UserModel.USERNAME), firstResult, maxResults);
+	} 
+	else 
+	{
+	    return getGroupMembersStream(realm, null, firstResult, maxResults);
+	}
     }
 
     @Override
@@ -226,15 +232,12 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         
 	
 	String username= rs.getString("username");
-	log.info("mapUser 1 "+username);
-        //DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
-        CustomUser user = new CustomUser.Builder(ksession, realm, model, username)
-          .email(rs.getString("email"))
-          .firstName("")
-          .lastName("")
-          .build();
+	String email = rs.getString("email");
         
-       /* log.info("mapUser 2 "+username);
+	CustomUser userAux = new CustomUser(username, email,"","", null);
+        CustomUserAdapter user = new CustomUserAdapter(ksession, realm, model, userAux);
+                
+       log.info("mapUser 2 "+username);
         ResultSet roles = null;
         try ( Connection c = DbUtil.getConnection(this.model)) {
             PreparedStatement st = c.prepareStatement("select is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active = true and username=?");
@@ -275,7 +278,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             	user.grantRole(getRoleFromString(realm, this.client, this.role_center_admin));
             if (admin)
             	user.grantRole(getRoleFromString(realm, this.client, this.role_admin));
-        }*/
+        }
       
         return user;
     }
@@ -299,5 +302,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
            
            return role;
        }
+    
+    
 
 }
