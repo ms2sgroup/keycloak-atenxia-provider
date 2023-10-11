@@ -113,8 +113,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     @Override
     public boolean isConfiguredFor(RealmModel realm, UserModel user, String credentialType) {
         log.info("[I57] isConfiguredFor(realm={},user={},credentialType={})",realm.getName(), user.getUsername(), credentialType);
-        // In our case, password is the only type of credential, so we allways return 'true' if
-        // this is the credentialType
+
         return supportsCredentialType(credentialType);
     }
 
@@ -138,7 +137,6 @@ public class CustomUserStorageProvider implements UserStorageProvider,
                 String[] components = hash.split("\\$");
                 return new PBKDF2SHA256HashingUtil(credentialInput.getChallengeResponse(), components[2], Integer.valueOf(components[1])).validatePassword(components[3]);
                 
-                //return pwd.equals(credentialInput.getChallengeResponse());
             }
             else {
                 return false;
@@ -149,7 +147,6 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         }
     }
 
-    // UserQueryProvider implementation
     
     @Override
     public int getUsersCount(RealmModel realm) {
@@ -227,7 +224,6 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         return Stream.empty();
     }
     
-    //------------------- Implementation 
     private UserModel mapUser(RealmModel realm, ResultSet rs) throws SQLException {
         
 	
@@ -242,15 +238,6 @@ public class CustomUserStorageProvider implements UserStorageProvider,
 	CustomUser userAux = new CustomUser(username, email,"","", centerAdmin, parent, professional, teacher, admin);
         CustomUserAdapter user = new CustomUserAdapter(ksession, realm, model, userAux);
                 
-        /*ResultSet roles = null;
-        try ( Connection c = DbUtil.getConnection(this.model)) {
-            PreparedStatement st = c.prepareStatement("select is_center_admin, is_parent, is_professional, is_teacher, is_staff from atenxia_user where is_active = true and username=?");
-            st.setString(1, username);
-            st.execute();
-            roles = st.getResultSet();
-        } catch (SQLException ex) {
-            throw new RuntimeException("Database error:" + ex.getMessage(), ex);
-        }*/
         
         try
         {

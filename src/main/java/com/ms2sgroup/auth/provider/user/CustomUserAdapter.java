@@ -68,7 +68,6 @@ class CustomUserAdapter extends AbstractUserAdapterFederatedStorage  {
 
     @Override
     public void setEmailVerified(boolean verified) {
-	// intended, email is always verified in this example
     }
 
     
