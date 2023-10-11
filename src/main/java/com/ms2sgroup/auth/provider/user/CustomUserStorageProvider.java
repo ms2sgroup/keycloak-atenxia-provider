@@ -257,12 +257,18 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         RoleModel roleProfessional = getRoleFromString(realm, this.client, this.role_professional);
         RoleModel roleCenterAdmin = getRoleFromString(realm, this.client, this.role_center_admin);
         RoleModel roleAdmin = getRoleFromString(realm, this.client, this.role_admin);
-                   
-        user.deleteRoleMapping(roleTeacher);
-        user.deleteRoleMapping(roleParent);
-        user.deleteRoleMapping(roleProfessional);
-        user.deleteRoleMapping(roleCenterAdmin);
-        user.deleteRoleMapping(roleAdmin);
+          
+        try
+        {
+            user.deleteRoleMapping(roleTeacher);
+            user.deleteRoleMapping(roleParent);
+            user.deleteRoleMapping(roleProfessional);
+            user.deleteRoleMapping(roleCenterAdmin);
+            user.deleteRoleMapping(roleAdmin);
+        }    
+        catch(Exception e)
+        {
+        }
             
         if (teacher)
             user.grantRole(roleTeacher);
