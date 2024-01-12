@@ -36,7 +36,7 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
             .name(CONFIG_KEY_JDBC_URL)
             .label("JDBC URL")
             .type(ProviderConfigProperty.STRING_TYPE)
-            .defaultValue("jdbc:postgresql://localhost/atenxia-core-db-dev")
+            .defaultValue("jdbc:postgresql://provider-host/provider-database")
             .helpText("JDBC URL used to connect to the user database")
             .add()
           .property()
@@ -72,7 +72,7 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
     @Override
     public String getId() {
         log.info("[I69] getId()");
-        return "custom-user-provider";
+        return "External-Database";
     }
 
     
