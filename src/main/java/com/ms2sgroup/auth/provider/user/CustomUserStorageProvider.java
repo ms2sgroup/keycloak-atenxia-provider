@@ -45,7 +45,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     private final String role_parent="PARENT";
     private final String role_center_admin="CENTER_ADMIN";
     
-    private final String client = "client-atenxia";
+    private final String client = "atenxia-api-client";
 
     public CustomUserStorageProvider(KeycloakSession ksession, ComponentModel model) {
         this.ksession = ksession;
